@@ -1,6 +1,14 @@
 import React, { Component } from "react";
-import { Header, MovieList, MovieDetails, Loading } from "./components";
-import apiMovie from "./conf/api.movie"
+import { Header } from "./components";
+import apiMovie, { apiMovieMap } from "./conf/api.movie";
+import Films from "./features/films";
+import Favoris from "./features/favoris";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from "react-router-dom";
 
 class App extends Component {
   constructor(props) {
@@ -8,7 +16,8 @@ class App extends Component {
     this.state = {
       movies: null,
       selectedMovie: 0,
-      loaded: false
+      loaded: false,
+      favoris:[]
     };
   }
   updateSelectedMovie = (index) => {
@@ -18,44 +27,70 @@ class App extends Component {
   };
 
   componentDidMount() {
-    apiMovie.get("/discover/movie")
-    .then(response => response.data.results)
-    .then(moviesApi=> {
-      const movies = moviesApi.map(m => ({
-        img: "https://image.tmdb.org/t/p/w500" + m.poster_path,
-        title: m.title,
-        descritpion: m.overview,
-        details: `${m.release_date} | ${m.vote_average} | ${m.vote_count}`
-      }))
-      
-        this.updateMovies(movies)
-    })
-    .catch(err => console.log(err))
+    apiMovie
+      .get("/discover/movie")
+      .then((response) => response.data.results)
+      .then((moviesApi) => {
+        const movies = moviesApi.map(apiMovieMap);
+
+        this.updateMovies(movies);
+      })
+      .catch((err) => console.log(err));
   }
-  updateMovies(movies) {
+  updateMovies = (movies) => {
     this.setState({
       movies,
-      loaded: true
+      loaded: true,
+    });
+  };
+  
+  addFavori = (title) => {
+    const favoris = this.state.favoris.slice()
+    const film = this.state.movies.find(m => m.title === title)
+    favoris.push(film)
+    this.setState({
+      favoris
+    })
+  }
+
+  removeFavori = (title) => {
+    const favoris = this.state.favoris.slice()
+    const index = this.state.favoris.findIndex(f => f.title === title)
+    favoris.splice(index,`1`)
+    this.setState({
+      favoris
     })
   }
 
   render() {
     return (
-      <div className="App d-flex flex-column">
-        <Header />
-        {this.state.loaded ? (
-          <div className="d-flex flex-rom flex-fill pt-4 p-2">
-          <MovieList
-            movies={this.state.movies}
-            updateSelectedMovie={this.updateSelectedMovie}
-          />
-          <MovieDetails movie={this.state.movies[this.state.selectedMovie]} />
+      <Router>
+        <div className="App d-flex flex-column">
+          <Header />
+          <Switch>
+            <Route
+              path="/films"
+              render={(props) => {
+                return (
+                  <Films
+                    {...props}
+                    loaded={this.state.loaded}
+                    updateMovies={this.updateMovies}
+                    updateSelectedMovie={this.updateSelectedMovie}
+                    movies={this.state.movies}
+                    selectedMovie={this.state.selectedMovie}
+                    addFavori= {this.addFavori}
+                    removeFavori ={this.removeFavori}
+                    favoris={this.state.favoris.map(f=> f.title)}
+                  />
+                );
+              }}
+            />
+            <Route path="/favoris" component={Favoris} />
+            <Redirect to="/films" />
+          </Switch>
         </div>
-        ) : (
-          <Loading />
-        )}
-        
-      </div>
+      </Router>
     );
   }
 }
