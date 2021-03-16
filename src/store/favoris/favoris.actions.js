@@ -63,7 +63,7 @@ export const removeFavoriError = (error) => ({
 });
 
 export const tryRemoveFavori = (title) => (dispatch, getState) => {
-  // const favoris = [...getState().favoris.data].slice();
+  // const favoris = [...getState().favoris.data];
   // const index = favoris.findIndex((f) => f.title === title);
   // favoris.splice(index, 1);
   const favoris = getState().favoris.data.filter(f => f.title !== title);
