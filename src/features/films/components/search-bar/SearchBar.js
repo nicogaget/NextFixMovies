@@ -4,19 +4,18 @@ import apiMovie, { apiMovieMap } from "../../../../conf/api.movie";
 
 export default class SearchBar extends Component {
   submit = (values, actions) => {
-    //console.log(values);
     const query =
       "?" +
       Object.keys(values)
         .map((k) => `${k}=${values[k]}&`)
         .join("");
-    
+
     apiMovie
       .get("search/movie" + query)
       .then((response) => response.data.results)
       .then((moviesApi) => {
         const movies = moviesApi.map(apiMovieMap);
-        actions.setSubmitting(false)
+        actions.setSubmitting(false);
 
         this.props.updateMovies(movies);
       })
@@ -49,7 +48,7 @@ export default class SearchBar extends Component {
             <button
               className="btn btn-small btn-success"
               type="submit"
-             // disabled={isSubmitting}
+              // disabled={isSubmitting}
             >
               Submit
             </button>
