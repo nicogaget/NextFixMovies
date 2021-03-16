@@ -28,9 +28,8 @@ export default {
 
     return apiMovie
       .get("search/movie" + query)
-      .then((response) => response.data.results)
-      .then((moviesApi) => {
-        const movies = moviesApi.map(apiMovieMap);
-      });
+      .then(response => response.data.results)
+      .then(moviesApi => moviesApi.map(apiMovieMap)
+      );
   },
 };
