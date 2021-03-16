@@ -9,3 +9,10 @@ const apiMovie = axios.create({
    return req
  })
 export default apiMovie
+
+export const apiMovieMap = (m) => ({
+  img: "https://image.tmdb.org/t/p/w500/" + m.poster_path,
+  title: m.title,
+  descritpion: m.overview,
+  details: `${m.release_date} | ${m.vote_average} | ${m.vote_count}`,
+})

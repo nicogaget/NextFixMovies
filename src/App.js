@@ -1,7 +1,15 @@
 import React, { Component } from "react";
-import { Header, MovieList, MovieDetails, Loading } from "./components";
-import dataMovies from "./data"
-import apiMovie from "./conf/api.movie"
+import { Header } from "./components";
+import apiMovie, { apiMovieMap } from "./conf/api.movie";
+import apiFirebase from './conf/api.firebase'
+import Films from "./features/films";
+import Favoris from "./features/favoris";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from "react-router-dom";
 
 class App extends Component {
   constructor(props) {
@@ -9,14 +17,9 @@ class App extends Component {
     this.state = {
       movies: null,
       selectedMovie: 0,
-      loaded: false
+      loaded: false,
+      favoris: null
     };
-    setTimeout(() => {
-      this.setState({
-        movies: dataMovies,
-        loaded : true
-      });
-    },500);
   }
   updateSelectedMovie = (index) => {
     this.setState({
@@ -25,28 +28,99 @@ class App extends Component {
   };
 
   componentDidMount() {
-    apiMovie.get("/discover/movie")
-    .then(response => console.log(response))
-    .then(err => console.log(err))
+    apiMovie
+      .get("/discover/movie")
+      .then((response) => response.data.results)
+      .then((moviesApi) => {
+        const movies = moviesApi.map(apiMovieMap);
+
+        this.updateMovies(movies);
+      })
+      .catch((err) => console.log(err));
+
+    apiFirebase.get('favoris.json')
+    .then(response => {
+      let favoris = response.data ? response.data : []
+      this.updateFavori(favoris)
+    })
   }
 
+  updateFavori = (favoris) => {
+    this.setState({
+      favoris,
+      loaded: this.state.movies ? true : false,
+    })
+  }
+  updateMovies = (movies) => {
+    this.setState({
+      movies,
+      loaded: this.state.favoris ? true : false,
+    });
+  };
+  
+  addFavori = (title) => {
+    const favoris = this.state.favoris.slice()
+    const film = this.state.movies.find(m => m.title === title)
+    favoris.push(film)
+    this.setState({
+      favoris
+    },() => {
+      this.savefavoris()
+    })
+  }
+
+  removeFavori = (title) => {
+    const favoris = this.state.favoris.slice()
+    const index = this.state.favoris.findIndex(f => f.title === title)
+    favoris.splice(index,`1`)
+    this.setState({
+      favoris
+    },() => {
+      this.savefavoris()
+    })
+  }
+
+  savefavoris = () => {
+    apiFirebase.put('favoris.json', this.state.favoris)
+  }
   render() {
     return (
-      <div className="App d-flex flex-column">
-        <Header />
-        {this.state.loaded ? (
-          <div className="d-flex flex-rom flex-fill pt-4 p-2">
-          <MovieList
-            movies={this.state.movies}
-            updateSelectedMovie={this.updateSelectedMovie}
-          />
-          <MovieDetails movie={this.state.movies[this.state.selectedMovie]} />
+      <Router>
+        <div className="App d-flex flex-column">
+          <Header />
+          <Switch>
+            <Route
+              path="/films"
+              render={(props) => {
+                return (
+                  <Films
+                    {...props}
+                    loaded={this.state.loaded}
+                    updateMovies={this.updateMovies}
+                    updateSelectedMovie={this.updateSelectedMovie}
+                    movies={this.state.movies}
+                    selectedMovie={this.state.selectedMovie}
+                    addFavori= {this.addFavori}
+                    removeFavori ={this.removeFavori}
+                    favoris={this.state.favoris}
+                  />
+                );
+              }}
+            />
+            <Route path="/favoris" render={ (props) => {
+              return (
+                <Favoris 
+                {...props}
+                loaded={this.state.loaded}
+                favoris={this.state.favoris}
+                removeFavori={this.removeFavori}
+                />
+              )
+            }} />
+            <Redirect to="/films" />
+          </Switch>
         </div>
-        ) : (
-          <Loading />
-        )}
-        
-      </div>
+      </Router>
     );
   }
 }
