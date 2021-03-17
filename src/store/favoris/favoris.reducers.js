@@ -9,7 +9,7 @@ export default (
   action
 ) => {
   switch (action.type) {
-    case actions.FET_FAVORIS_SUCCESS: {
+    case actions.FETCH_FAVORIS_SUCCESS: {
       return {
         ...state,
         data: action.favoris,

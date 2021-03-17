@@ -1,4 +1,4 @@
-import apiMovieRequest, { apiMovie } from "../../conf/api.movie";
+import apiMovieRequest from "../../conf/api.movie";
 
 export const REQUEST_MOVIES = "request movies";
 export const FETCH_MOVIE = "fetch movies";

@@ -17,5 +17,6 @@ import favoris from './favoris/favoris.reducers'
 
 
 export default{
-  movies
+  movies,
+  favoris
 }
