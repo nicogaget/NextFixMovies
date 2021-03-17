@@ -1,21 +1,36 @@
 import React from "react";
 import { FavoriList } from "./components";
 import Loading from "../../components/utils/loading";
+import { connect } from "react-redux";
+import {
+  favorisListSelector,
+  favorisIsLoadingSelector,
+} from "../../store/selectors";
+import { tryRemoveFavori } from "../../store/actions";
 
 // eslint-disable-next-line
-export default (props) => {
+const Favoris = (props) => {
   return (
     <div className="d-flex flex-rom flex-fill pt-4 p-2">
-      {props.loaded ? (
+      {props.isLoading ? (
+        <Loading />
+      ) : (
         <div className="d-flex flex-rom flex-fill pt-4 p-2">
           <FavoriList
             favoris={props.favoris}
-            removeFavori={props.removeFavori}
+            removeFavori={props.tryRemoveFavori}
           />
         </div>
-      ) : (
-        <Loading />
       )}
     </div>
   );
 };
+export default connect(
+  (state) => ({
+    favoris: favorisListSelector(state),
+    isLoading: favorisIsLoadingSelector(state),
+  }),
+  {
+    tryRemoveFavori,
+  }
+)(Favoris);
