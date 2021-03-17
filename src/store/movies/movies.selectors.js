@@ -2,7 +2,7 @@ import { createSelector } from "reselect";
 
 export const moviesSelector = (state) => state.movies;
 
-export const moviesisLoadingSelector = createSelector(
+export const moviesIsLoadingSelector = createSelector(
   [moviesSelector],
   (movies) => movies.isLoading
 );

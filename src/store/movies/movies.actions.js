@@ -27,7 +27,7 @@ export const fetchMovies = (filter) => (dispatch) => {
     (error) => dispatch(fetchMoviesError(error))
   );
 };
-export const setSelectedMovies = (index) => ({
+export const setSelectedMovie = (index) => ({
   type: SET_SELECTED_MOVIES,
   index,
 });

@@ -1,17 +1,14 @@
 import React, { Component, lazy, Suspense } from "react";
-import { connect } from 'react-redux';
-import {
-  Redirect, Route,
-  Switch
-} from "react-router-dom";
+import { connect } from "react-redux";
+import { Redirect, Route, Switch, withRouter } from "react-router-dom";
 import { Header } from "./components";
 import { fetchFavoris } from "./store/actions";
 
 const LazyFilms = lazy(() =>
-  import(/**webpackChunckName: "Films"*/ "./features/films")
+  import("./features/films")
 );
 const LazyFavoris = lazy(() =>
-  import(/**webpackChunckName: "Favoris"*/ "./features/favoris")
+  import("./features/favoris")
 );
 class App extends Component {
   componentDidMount() {
@@ -34,4 +31,4 @@ class App extends Component {
   }
 }
 
-export default connect(null, { fetchFavoris })(App);
+export default withRouter(connect(null, { fetchFavoris })(App));

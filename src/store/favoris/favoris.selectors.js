@@ -10,3 +10,8 @@ export const favorisListNameSelector = createSelector(
   [favorisListSelector],
   (favorisData) => favorisData.map(f=>f.title)
 );
+
+export const favorisIsLoadingSelector = createSelector(
+  [favorisSelector],
+  favoris => favoris.isLoading
+)

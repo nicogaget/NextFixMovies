@@ -6,7 +6,7 @@ import {
   favorisListSelector,
   favorisIsLoadingSelector,
 } from "../../store/selectors";
-import { tryRemoveFavoris } from "../../store/actions";
+import { tryRemoveFavori } from "../../store/actions";
 
 // eslint-disable-next-line
 const Favoris = (props) => {
@@ -18,7 +18,7 @@ const Favoris = (props) => {
         <div className="d-flex flex-rom flex-fill pt-4 p-2">
           <FavoriList
             favoris={props.favoris}
-            removeFavori={props.tryRemoveFavoris}
+            removeFavori={props.tryRemoveFavori}
           />
         </div>
       )}
@@ -31,6 +31,6 @@ export default connect(
     isLoading: favorisIsLoadingSelector(state),
   }),
   {
-    tryRemoveFavoris,
+    tryRemoveFavori,
   }
 )(Favoris);

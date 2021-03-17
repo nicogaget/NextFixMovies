@@ -1,17 +1,12 @@
-import { createStore, applyMiddleware, combinersReducers } from "redux";
-import reducers from "./reducers";
-import logger from "redux-logger";
-import { composeWithdevTools } from "redux-devtools-extension/developmentOnly";
-import thunkMiddleWare from "redux-thunk";
+import { createStore, applyMiddleware, combineReducers } from 'redux';
+import reducers from './reducers';
+import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
+import thunkMiddleware from 'redux-thunk';
 
-const appReducer = combinersReducers(reducers);
+const appReducer = combineReducers(reducers);
 
-const middleWares = [thunkMiddleWare];
-if (process.env.NODE_ENV === "developpement") {
-  middleWares.push(logger);
-}
+const middlewares = [thunkMiddleware];
 
-export const store = createStore(
-  appReducer,
-  composeWithdevTools(applyMiddleware(...middleWares))
+export const store = createStore(appReducer, composeWithDevTools(
+  applyMiddleware(...middlewares))
 );
