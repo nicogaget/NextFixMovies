@@ -1,5 +1,5 @@
 import * as actions from "./movies.actions";
-
+// eslint-disable-next-line
 export default (
   state = {
     data: [],

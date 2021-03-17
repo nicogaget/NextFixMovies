@@ -15,7 +15,7 @@ import favoris from './favoris/favoris.reducers'
 //   }
 // }
 
-
+// eslint-disable-next-line
 export default{
   movies,
   favoris

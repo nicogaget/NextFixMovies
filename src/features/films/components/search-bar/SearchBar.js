@@ -1,6 +1,5 @@
-import React, { Component } from "react";
 import { Formik } from "formik";
-import apiMovie, { apiMovieMap } from "../../../../conf/api.movie";
+import React, { Component } from "react";
 
 export default class SearchBar extends Component {
   submit = (values, actions) => {
